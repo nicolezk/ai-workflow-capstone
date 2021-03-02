@@ -56,6 +56,25 @@ def load_json_from_dir(dir):
 
     return df
 
+def aggregate_data(df):
+    """
+    Obtains summarized data (number of purchases, number of unique invoices, 
+    number of unique streams, total number of views, and total revenue) per day
+    (grouped by country)
 
+    Parameters
+    ----------
+    df: pandas DataFrame
 
-load_json_from_dir('/Users/nicole.zafalon.kovacs/git/ai-workflow-capstone/0_exercise_files/cs-production')
+    Returns
+    -------
+    summ_df: pandas DataFrame
+    """
+    summ_df = df.groupby(['country','date']).agg(
+                                    purchases=('customer_id','count'),
+                                    unique_invoices=('invoice','nunique'),
+                                    unique_streams=('stream_id','nunique'),
+                                    total_views=('times_viewed','sum'),
+                                    revenue=('price','sum')).reset_index('country')
+
+    return summ_df
